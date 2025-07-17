@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export type IProduct = Document & {
   id: number;
   name: string;
+  shortDescription: string;
   description: string;
   imageUrl: string;
   weight: number;
@@ -19,6 +20,7 @@ const ProductSchema: Schema = new Schema(
 
     id: { type: Number },
     name: { type: String, required: true },
+    shortDescription: { type: String, required: true },
     description: { type: String, required: true },
     imageUrl: { type: String },
     weight: { type: Number, required: true },

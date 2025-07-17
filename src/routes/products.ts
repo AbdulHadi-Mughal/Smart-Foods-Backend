@@ -4,6 +4,7 @@ import {
   createProduct,
   getAllProducts,
   getProductById,
+  updateProduct,
   validateRequest,
 } from "../handlers/products";
 
@@ -14,5 +15,7 @@ router.get("/", getAllProducts);
 router.get("/:id", getProductById);
 
 router.post("/", validateRequest, createProduct);
+
+router.put("/", updateProduct);
 
 export default router;

@@ -2,12 +2,23 @@ import { Request, Response } from "express-serve-static-core";
 import productSchema from "../Database/productSchema";
 import { Spice } from "../types/Spice.type";
 
+// export const getAllProducts = async (req: Request, res: Response) => {
+//   try {
+//     const products = await productSchema.find();
+//     res.status(200).json(products);
+//   } catch (error) {
+//     res.status(500).json({ message: "Error fetching products" });
+//   }
+// };
+
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const products = await productSchema.find();
+    const products = await productSchema
+      .find({}, { description: 1, name: 1, _id: 0 })
+      .lean();
     res.status(200).json(products);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching products" });
+    res.status(500).json({ message: "Error fetching products", error });
   }
 };
 
@@ -88,4 +99,31 @@ export const validateRequest = (
   }
 
   next();
+};
+
+export const updateProduct = async (req: Request, res: Response) => {
+  const { name, shortDescription } = req.body;
+  // Add shortDescription property to the update payload
+  if (
+    !shortDescription ||
+    typeof shortDescription !== "string" ||
+    shortDescription.length < 5
+  ) {
+    return res
+      .status(400)
+      .json({ message: "Invalid or missing shortDescription." });
+  }
+  try {
+    const updatedProduct = await productSchema.findOneAndUpdate(
+      { name },
+      { $set: { shortDescription } },
+      { new: true, runValidators: true }
+    );
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating product", error });
+  }
 };
