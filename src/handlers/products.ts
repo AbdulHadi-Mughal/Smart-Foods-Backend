@@ -1,20 +1,32 @@
 import { Request, Response } from "express-serve-static-core";
-import productSchema from "../Database/productSchema";
-import { Spice } from "../types/Spice.type";
-
-// export const getAllProducts = async (req: Request, res: Response) => {
-//   try {
-//     const products = await productSchema.find();
-//     res.status(200).json(products);
-//   } catch (error) {
-//     res.status(500).json({ message: "Error fetching products" });
-//   }
-// };
+import productSchema from "../Database/models/Product";
+import { Spice, SpiceCardInfo } from "../types/Spice.type";
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const products = await productSchema
-      .find({}, { description: 1, name: 1, _id: 0 })
+    const products = await productSchema.find().lean();
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching products" });
+  }
+};
+
+export const getAllProductsSimple = async (req: Request, res: Response) => {
+  try {
+    const products: SpiceCardInfo[] = await productSchema
+      .find(
+        {},
+        {
+          id: 1,
+          name: 1,
+          imageUrl: 1,
+          weight: 1,
+          price: 1,
+          category: 1,
+          shortDescription: 1,
+          _id: 0, // Exclude MongoDB's default _id field
+        }
+      )
       .lean();
     res.status(200).json(products);
   } catch (error) {
@@ -22,19 +34,23 @@ export const getAllProducts = async (req: Request, res: Response) => {
   }
 };
 
-export const getProductById = async (
-  req: Request<{ id: string }>,
+export const getProductByName = async (
+  req: Request<{ name: string }>,
   res: Response
 ) => {
-  const { id } = req.params;
+  const { name } = req.params;
   try {
-    const product = await productSchema.findById(id);
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-    res.status(200).json(product);
+    setTimeout(async () => {
+      const product = await productSchema
+        .findOne({ name: name.replaceAll("-", " ") })
+        .lean();
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      res.status(200).json(product);
+    }, 3000); // Simulate a delay for demonstration purposes
   } catch (error) {
-    res.status(500).json({ message: "Error fetching product" });
+    res.status(500).json({ message: "Error fetching product", error });
   }
 };
 
@@ -73,7 +89,7 @@ export const createProduct = async (
   }
 };
 
-export const validateRequest = (
+export const validatePostRequest = (
   req: Request<{}, {}, Spice>,
   res: Response,
   next: Function
@@ -125,5 +141,21 @@ export const updateProduct = async (req: Request, res: Response) => {
     res.status(200).json(updatedProduct);
   } catch (error) {
     res.status(500).json({ message: "Error updating product", error });
+  }
+};
+
+export const deleteProduct = async (
+  req: Request<{ name: string }>,
+  res: Response
+) => {
+  const { name } = req.params;
+  try {
+    const deletedProduct = await productSchema.findOneAndDelete({ name });
+    if (!deletedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.status(200).json({ message: "Product deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting product", error });
   }
 };

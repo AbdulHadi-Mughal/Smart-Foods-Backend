@@ -1,5 +1,4 @@
 export interface Spice {
-  id: number;
   name: string;
   shortDescription: string;
   description: string;
@@ -8,4 +7,14 @@ export interface Spice {
   price: number;
   category: string;
   instruction: string;
+  inStock: boolean;
+}
+
+export interface SpiceCardInfo {
+  name: string;
+  shortDescription: string;
+  imageUrl: string;
+  weight: number;
+  price: number;
+  category: string;
 }

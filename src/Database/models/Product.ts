@@ -1,16 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { Spice } from "../../types/Spice.type";
 
-export type IProduct = Document & {
-  id: number;
-  name: string;
-  shortDescription: string;
-  description: string;
-  imageUrl: string;
-  weight: number;
-  price: number;
-  category: string;
-  instruction: string;
-};
+export type IProduct = Document & Spice;
 
 const ProductSchema: Schema = new Schema(
   {
@@ -18,7 +9,6 @@ const ProductSchema: Schema = new Schema(
     // Suppose you have a ReviewSchema and want to reference it in ProductSchema
     // reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
 
-    id: { type: Number },
     name: { type: String, required: true },
     shortDescription: { type: String, required: true },
     description: { type: String, required: true },
@@ -27,6 +17,7 @@ const ProductSchema: Schema = new Schema(
     price: { type: Number, required: true },
     category: { type: String, required: true },
     instruction: { type: String, required: true },
+    inStock: { type: Boolean, default: true }, // Added inStock field
   },
   { timestamps: true }
 );

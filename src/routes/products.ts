@@ -1,21 +1,24 @@
-import productSchema from "../Database/productSchema";
+import productSchema from "../Database/models/Product";
 import { Router } from "express";
 import {
   createProduct,
+  deleteProduct,
   getAllProducts,
-  getProductById,
+  getProductByName,
   updateProduct,
-  validateRequest,
+  validatePostRequest,
 } from "../handlers/products";
 
 const router = Router();
 
 router.get("/", getAllProducts);
 
-router.get("/:id", getProductById);
+router.get("/:name", getProductByName);
 
-router.post("/", validateRequest, createProduct);
+router.post("/", validatePostRequest, createProduct);
 
-router.put("/", updateProduct);
+router.put("/:id", validatePostRequest, updateProduct);
+
+router.delete("/:name", deleteProduct);
 
 export default router;
