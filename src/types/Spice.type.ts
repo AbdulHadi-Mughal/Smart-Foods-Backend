@@ -1,4 +1,7 @@
+import { FlattenMaps } from "mongoose";
+
 export interface Spice {
+  _id: FlattenMaps<unknown>;
   name: string;
   shortDescription: string;
   description: string;
@@ -11,6 +14,7 @@ export interface Spice {
 }
 
 export interface SpiceCardInfo {
+  _id: FlattenMaps<unknown>;
   name: string;
   shortDescription: string;
   imageUrl: string;

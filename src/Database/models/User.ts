@@ -1,5 +1,6 @@
 import { Schema, Document, model } from "mongoose";
 import { User } from "../../types/user.type";
+import { required } from "zod/v4/core/util.cjs";
 
 export type IUser = Document & User;
 
@@ -13,10 +14,12 @@ const UserSchema: Schema = new Schema(
     email: { type: String, required: true, unique: true },
     hash: { type: String, required: true },
     city: { type: String, required: true },
-    restaurant: String,
-    address: [{ type: String }],
-    favouriteSpices: [{ type: String }],
+    phoneNumber: { type: String, required: false },
+    restaurant: { type: String, required: false },
+    address: [{ type: Schema.Types.ObjectId, ref: "Address", default: [] }],
+    favouriteSpices: [{ type: String, default: [] }],
     history: [{ type: Schema.Types.ObjectId, ref: "Order" }],
+    _id: { type: Schema.Types.ObjectId, auto: true },
   },
   { timestamps: true }
 );

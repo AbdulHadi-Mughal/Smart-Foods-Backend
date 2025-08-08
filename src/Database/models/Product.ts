@@ -8,7 +8,8 @@ const ProductSchema: Schema = new Schema(
     // Example of referencing another schema type:
     // Suppose you have a ReviewSchema and want to reference it in ProductSchema
     // reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
-
+    /*************  ✨ Windsurf Command 🌟  *************/
+    _id: { type: Schema.Types.ObjectId, required: true, auto: true },
     name: { type: String, required: true },
     shortDescription: { type: String, required: true },
     description: { type: String, required: true },

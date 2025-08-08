@@ -1,27 +1,62 @@
 import express from "express";
+
 import productRoute from "./routes/products";
-import mongoose from "mongoose";
+import userRoute from "./routes/users";
+
 import connectToDatabase from "./Database/mongoose";
-import { configDotenv } from "dotenv";
-import cors from "cors";
-configDotenv();
+
+import cors, { CorsOptions } from "cors";
+import cookieParser from "cookie-parser";
+
+import mongoose from "mongoose";
+import { JwtPayload } from "jsonwebtoken";
+import { allowedOrigins, checkOrigin } from "./handlers/validators/checkOrigin";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = (process.env.PORT || 3000) as number;
 
-const corsOptions = {
-  origin: "http://localhost:5173", // Adjust this to your client URL
-  methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed HTTP methods
-  allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
-  credentials: true, // Allow sending cookies and HTTP authentication credentials
+declare module "express-serve-static-core" {
+  interface Request {
+    cookies: any & {
+      AuthToken?: string | JwtPayload;
+    };
+    user?: {
+      email: string | null;
+    };
+    safeQuery?: Object; // Add the safeQuery property to the Request interf
+  }
+}
+
+const corsOptions: CorsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+  credentials: true, // only works with specific origins, NOT "*"
 };
-app.use(cors());
+app.use(cors(corsOptions));
+
+app.use(checkOrigin);
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+mongoose.set("strictQuery", true);
+mongoose.set("sanitizeFilter", true);
+
+app.get("/api/warmup", (req, res) => {
+  res.send("Server is warm");
+});
 
 app.use("/api/products", productRoute);
+app.use("/api/users", userRoute);
 
-app.listen(port, () => {
+app.listen(port, "192.168.0.178", () => {
   console.log("Server Started");
   connectToDatabase();
 });

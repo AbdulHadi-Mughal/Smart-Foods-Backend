@@ -1,0 +1,41 @@
+import { Router } from "express";
+import { authorize, handleLogin, handleSignup } from "../handlers/auth";
+import {
+  getUserByToken,
+  updateUser,
+  validateUpdateField,
+} from "../handlers/users";
+import { sanitizeBody } from "../handlers/validators/sanitizers";
+import {
+  addAddress,
+  getUserAddresses,
+  updateAddress,
+} from "../handlers/address";
+
+const router = Router();
+
+// Auth
+
+router.post("/login", sanitizeBody, handleLogin);
+
+router.post("/signup", sanitizeBody, handleSignup);
+
+router.get("/authorize", sanitizeBody, authorize);
+
+// User Profile
+
+router.get("/me", authorize, getUserByToken);
+
+router.put("/update", sanitizeBody, authorize, validateUpdateField, updateUser);
+
+// Address
+
+router.get("/address", authorize, getUserAddresses);
+
+router.post("/address", authorize, sanitizeBody, addAddress);
+
+router.put("/address/:_id", authorize, sanitizeBody, updateAddress);
+
+//router.put("/addField", authorize, validateUpdateField, addField);
+
+export default router;
