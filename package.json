@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node --env-file=.env dist/app.js",
-    "dev": "npx nodemon --watch 'src/**/*.ts' --exec 'ts-node --files --project tsconfig.json' src/app.ts"
+    "start": "node dist/app.js",
+    "dev": "nodemon --exec npx ts-node src/app.ts"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +23,6 @@
     "mongo-sanitize": "^1.1.0",
     "mongodb": "^6.17.0",
     "mongoose": "^8.16.3",
-    "ts-node": "^10.9.2",
     "xss": "^1.0.15",
     "zod": "^4.0.10"
   },
