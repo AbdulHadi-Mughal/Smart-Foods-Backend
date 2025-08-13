@@ -3,7 +3,7 @@ import { CLIENT_URL } from "../../envconfig";
 
 export const allowedOrigins: string[] =
   process.env.NODE_ENV === "development"
-    ? ["http://192.168.0.178:5173"]
+    ? ["http://192.168.0.193:5173"]
     : [...(CLIENT_URL ? [CLIENT_URL] : [])];
 
 export const checkOrigin: RequestHandler = (req, res, next) => {
@@ -17,7 +17,7 @@ export const checkOrigin: RequestHandler = (req, res, next) => {
 
   if (!isAllowed) {
     console.log(`Blocked request - Potential CSRF attack. Origin: ${origin}`);
-    return res.status(403).json({ error: "CSRF protection: invalid origin" });
+    return res.status(403).json({ error: "Access Denied" });
   }
   next();
 };
