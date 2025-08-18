@@ -43,8 +43,8 @@ export type SignUpForm = {
 export type Address = {
   _id: string;
   userId: string;
-  area: string;
-  street: string;
+  house_building: string;
+  street_area: string;
   city: string;
   province:
     | "Punjab"

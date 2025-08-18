@@ -12,6 +12,8 @@ import mongoose from "mongoose";
 import { JwtPayload } from "jsonwebtoken";
 import { allowedOrigins, checkOrigin } from "./handlers/validators/checkOrigin";
 
+import { sanitizeBody } from "./handlers/validators/sanitizers";
+
 const app = express();
 const port = (process.env.PORT || 3000) as number;
 
@@ -23,7 +25,7 @@ declare module "express-serve-static-core" {
     user?: {
       email: string | null;
     };
-    safeQuery?: Object; // Add the safeQuery property to the Request interf
+    safeQuery: Query; // Add the safeQuery property to the Request interf
   }
 }
 
@@ -40,14 +42,18 @@ const corsOptions: CorsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.use(checkOrigin);
+if (process.env.NODE_ENV === "production") {
+  app.use(checkOrigin);
+}
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-mongoose.set("strictQuery", true);
-mongoose.set("sanitizeFilter", true);
+// mongoose.set("strictQuery", true);
+// mongoose.set("sanitizeFilter", true);
+
+app.use(sanitizeBody);
 
 app.get("/api/warmup", (req, res) => {
   res.send("Server is warm");

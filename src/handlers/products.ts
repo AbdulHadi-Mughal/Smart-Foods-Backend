@@ -11,20 +11,22 @@ export const getAllProducts = async (req: Request, res: Response) => {
   }
 };
 
-export const getAllProductsSimple = async (req: Request, res: Response) => {
+export const getAllProductsSimple: (
+  req: Request,
+  res: Response
+) => Promise<void> = async (req: Request, res: Response) => {
   try {
     const products: SpiceCardInfo[] = await productSchema
       .find(
         {},
         {
-          id: 1,
           name: 1,
           imageUrl: 1,
           weight: 1,
           price: 1,
           category: 1,
           shortDescription: 1,
-          _id: 0, // Exclude MongoDB's default _id field
+          _id: 1,
         }
       )
       .lean();
@@ -40,17 +42,53 @@ export const getProductByName = async (
 ) => {
   const { name } = req.params;
   try {
-    setTimeout(async () => {
-      const product = await productSchema
-        .findOne({ name: name.replaceAll("-", " ") })
-        .lean();
-      if (!product) {
-        return res.status(404).json({ message: "Product not found" });
-      }
-      res.status(200).json(product);
-    }, 3000); // Simulate a delay for demonstration purposes
+    const product = await productSchema
+      .findOne({ name: name.replaceAll("-", " ") })
+      .lean();
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.status(200).json(product);
   } catch (error) {
     res.status(500).json({ message: "Error fetching product", error });
+  }
+};
+
+export const getProductsInBatch = async (req: Request, res: Response) => {
+  // Safely extract and validate `batch` query param
+  const batchParam = (req.safeQuery?.batch as string | undefined)?.trim();
+
+  if (!batchParam) {
+    console.log("Missing batch parameter");
+    return res.status(400).json({ error: "Missing 'batch' query parameter" });
+  }
+
+  // Convert batch string into array of names
+  const batchArray = batchParam
+    .replaceAll("-", " ")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (batchArray.length === 0) {
+    return res.status(200).json({});
+  }
+
+  try {
+    // Find all products that match any of the batch names
+    const products = await productSchema
+      .find({ name: { $in: batchArray } })
+      .lean();
+
+    if (products.length === 0) {
+      console.log("No products found for batch");
+      return res.status(400).json({ message: "No products found" });
+    }
+
+    res.status(200).json(products);
+  } catch (error) {
+    console.error("Error fetching batch products", error);
+    res.status(500).json({ message: "Error fetching products" });
   }
 };
 

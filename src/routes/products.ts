@@ -1,17 +1,21 @@
-import productSchema from "../Database/models/Product";
 import { Router } from "express";
 import {
   createProduct,
   deleteProduct,
-  getAllProducts,
+  getAllProductsSimple,
   getProductByName,
+  getProductsInBatch,
   updateProduct,
   validatePostRequest,
 } from "../handlers/products";
 
 const router = Router();
 
-router.get("/", getAllProducts);
+// GET Product
+
+router.get("/", getAllProductsSimple);
+
+router.get("/batch", getProductsInBatch);
 
 router.get("/:name", getProductByName);
 

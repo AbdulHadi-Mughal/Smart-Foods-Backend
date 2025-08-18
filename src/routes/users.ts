@@ -8,6 +8,7 @@ import {
 import { sanitizeBody } from "../handlers/validators/sanitizers";
 import {
   addAddress,
+  deleteAddress,
   getUserAddresses,
   updateAddress,
 } from "../handlers/address";
@@ -35,6 +36,8 @@ router.get("/address", authorize, getUserAddresses);
 router.post("/address", authorize, sanitizeBody, addAddress);
 
 router.put("/address/:_id", authorize, sanitizeBody, updateAddress);
+
+router.delete("/address/:_id", authorize, sanitizeBody, deleteAddress);
 
 //router.put("/addField", authorize, validateUpdateField, addField);
 

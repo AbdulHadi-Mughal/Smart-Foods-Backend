@@ -6,8 +6,8 @@ export type IAddress = Document & Address;
 const AddressSchema: Schema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    area: { type: String, required: true },
-    street: { type: String, required: true },
+    house_building: { type: String, required: true },
+    street_area: { type: String, required: true },
     city: { type: String, required: true },
     province: { type: String, required: true },
     postalCode: { type: String, required: true },

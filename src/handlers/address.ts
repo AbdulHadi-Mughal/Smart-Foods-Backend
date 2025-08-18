@@ -67,11 +67,11 @@ export const addAddress = async (
     if (typeof body === "string") {
       return res.status(400).json({ message: body });
     }
-    const { area, street, city, province, postalCode } = body;
+    const { house_building, street_area, city, province, postalCode } = body;
 
     const address = await addressModel.create({
-      area,
-      street,
+      house_building,
+      street_area,
       city,
       province,
       postalCode,
@@ -124,6 +124,36 @@ export const updateAddress = async (
     res.status(200).json(address);
   } catch (error) {
     console.error("Error updating address:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const deleteAddress = async (req: Request, res: Response) => {
+  const email = req.user?.email;
+  if (!email) {
+    console.log("Unauthorized - bypassed validation. req.user:", req.user);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  try {
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      console.log("User not found during profile edit:", email);
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const { _id } = req.params;
+    const address = await addressModel.findByIdAndDelete(_id);
+
+    user.address = user.address.filter((id) => id !== _id);
+    await user.save();
+
+    if (!address) {
+      return res.status(404).json({ message: "Address not found" });
+    }
+
+    res.status(200).json(address);
+  } catch (error) {
+    console.error("Error deleting address:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -10,24 +10,24 @@ import { z } from "zod";
 const postalCodeMessage = "Postal code must be a 5-digit number.";
 export const addressSchema = z
   .object({
-    area: z
+    house_building: z
       .string()
       .trim()
-      .min(5, "Area must be at least 5 characters.")
-      .max(100, "Area must be at most 100 characters.")
+      .min(5, "House or Building No. must be at least 5 characters.")
+      .max(100, "House or Building No. must be at most 100 characters.")
       .refine(
         (s) => /^[\p{L}0-9\s,.'\-#]+$/u.test(s),
-        "Area contains invalid characters."
+        "House or Building No. contains invalid characters."
       ),
 
-    street: z
+    street_area: z
       .string()
       .trim()
-      .min(5, "Street must be at least 5 characters.")
-      .max(100, "Street must be at most 100 characters.")
+      .min(5, "Street or Area must be at least 5 characters.")
+      .max(100, "Street or Area must be at most 100 characters.")
       .refine(
         (s) => /^[\p{L}0-9\s,.'\-#]+$/u.test(s),
-        "Street contains invalid characters."
+        "Street or Area contains invalid characters."
       ),
 
     city: z
