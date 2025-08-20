@@ -4,4 +4,8 @@
   auto_stop_machines = true
   auto_start_machines = true
 
-  primary_region = "bom"
+primary_region = "bom"
+[[vm]]
+cpu_kind = "shared"
+cpus = 1
+memory_mb = 512
