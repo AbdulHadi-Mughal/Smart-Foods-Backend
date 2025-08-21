@@ -8,9 +8,8 @@ import connectToDatabase from "./Database/mongoose";
 import cors, { CorsOptions } from "cors";
 import cookieParser from "cookie-parser";
 
-import mongoose from "mongoose";
 import { JwtPayload } from "jsonwebtoken";
-import { allowedOrigins, checkOrigin } from "./handlers/validators/checkOrigin";
+import { allowedOrigins } from "./handlers/validators/checkOrigin";
 
 import { sanitizeBody } from "./handlers/validators/sanitizers";
 
@@ -42,9 +41,9 @@ const corsOptions: CorsOptions = {
 };
 app.use(cors(corsOptions));
 
-if (process.env.NODE_ENV === "production") {
-  app.use(checkOrigin);
-}
+// if (process.env.NODE_ENV === "production") {
+//   app.use(checkOrigin);
+// }
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
