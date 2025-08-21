@@ -62,9 +62,13 @@ app.get("/api/warmup", (req, res) => {
 app.use("/api/products", productRoute);
 app.use("/api/users", userRoute);
 
-app.listen(port, "192.168.0.193", () => {
-  console.log("Server Started");
-  connectToDatabase();
-});
+app.listen(
+  port,
+  process.env.NODE_ENV === "development" ? "192.168.0.193" : "0.0.0.0",
+  () => {
+    console.log("Server Started in " + process.env.NODE_ENV);
+    connectToDatabase();
+  }
+);
 
 // imagekit ID: vqu9cto3v
