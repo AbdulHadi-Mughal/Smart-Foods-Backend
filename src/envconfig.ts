@@ -1,7 +1,7 @@
 // config.ts
-import { configDotenv } from "dotenv";
 
 if (process.env.NODE_ENV !== "production") {
+  const { configDotenv } = require("dotenv");
   configDotenv();
 }
 

@@ -40,8 +40,8 @@ app.get("/api/warmup", (req, res) => {
 });
 app.use("/api/products", products_1.default);
 app.use("/api/users", users_1.default);
-app.listen(port, "192.168.0.193", () => {
-    console.log("Server Started");
+app.listen(port, process.env.NODE_ENV === "development" ? "192.168.0.193" : "0.0.0.0", () => {
+    console.log("Server Started in " + process.env.NODE_ENV);
     (0, mongoose_1.default)();
 });
 // imagekit ID: vqu9cto3v

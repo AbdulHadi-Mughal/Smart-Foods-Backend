@@ -1,10 +1,10 @@
 "use strict";
+// config.ts
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CLIENT_URL = exports.BCRYPT_SALT_ROUNDS = exports.PORT = exports.MONGO_URI = exports.JWT_SECRET = void 0;
-// config.ts
-const dotenv_1 = require("dotenv");
 if (process.env.NODE_ENV !== "production") {
-    (0, dotenv_1.configDotenv)();
+    const { configDotenv } = require("dotenv");
+    configDotenv();
 }
 function getEnvVar(name) {
     const value = process.env[name];
