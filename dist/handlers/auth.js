@@ -49,11 +49,9 @@ const handleSignup = async (req, res) => {
             .status(201)
             .cookie("AuthToken", jwtCookie, {
             // Expose this cookie to subdomains
-            /*************  ✨ Windsurf Command 🌟  *************/
             domain: isProd
                 ? "." + envconfig_1.CLIENT_URL.replace(/^www\./, "").split("/")[2]
                 : undefined, // Replace with your actual domain in production
-            /*******  9a2e7fba-c54e-485b-a1a9-bc9f30b153d2  *******/
             httpOnly: isProd, // Always keep this true for security
             secure: isProd, // Only true in production (HTTPS)
             sameSite: "strict", // Must be "none" if frontend is on different origin *and* using HTTPS
@@ -99,7 +97,9 @@ const handleLogin = async (req, res) => {
         res
             .status(201)
             .cookie("AuthToken", jwtCookie, {
-            domain: isProd ? `.${envconfig_1.CLIENT_URL}` : undefined, // Replace with your actual domain in production
+            domain: isProd
+                ? `.${envconfig_1.CLIENT_URL.replace(/^www\./, "").split("/")[2]}`
+                : undefined, // Replace with your actual domain in production
             httpOnly: isProd, // Always keep this true for security
             secure: isProd, // Only true in production (HTTPS)
             sameSite: "strict", // Must be "none" if frontend is on different origin *and* using HTTPS
