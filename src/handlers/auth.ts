@@ -60,7 +60,9 @@ export const handleSignup = async (
       .status(201)
       .cookie("AuthToken", jwtCookie, {
         // Expose this cookie to subdomains
-        domain: isProd ? `.${CLIENT_URL}` : undefined, // Replace with your actual domain in production
+        domain: isProd
+          ? "." + CLIENT_URL.replace(/^www\./, "").split("/")[2]
+          : undefined, // Replace with your actual domain in production
         httpOnly: isProd, // Always keep this true for security
         secure: isProd, // Only true in production (HTTPS)
         sameSite: "strict", // Must be "none" if frontend is on different origin *and* using HTTPS
