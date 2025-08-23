@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { authorize, handleLogin, handleSignup } from "../handlers/auth";
+import {
+  authorize,
+  handleLogin,
+  handleLogout,
+  handleSignup,
+} from "../handlers/auth";
 import {
   getUserByToken,
   updateUser,
@@ -16,10 +21,11 @@ import {
 const router = Router();
 
 // Auth
+router.post("/signup", sanitizeBody, handleSignup);
 
 router.post("/login", sanitizeBody, handleLogin);
 
-router.post("/signup", sanitizeBody, handleSignup);
+router.delete("/logout", handleLogout);
 
 router.get("/authorize", sanitizeBody, authorize);
 

@@ -7,8 +7,9 @@ const sanitizers_1 = require("../handlers/validators/sanitizers");
 const address_1 = require("../handlers/address");
 const router = (0, express_1.Router)();
 // Auth
-router.post("/login", sanitizers_1.sanitizeBody, auth_1.handleLogin);
 router.post("/signup", sanitizers_1.sanitizeBody, auth_1.handleSignup);
+router.post("/login", sanitizers_1.sanitizeBody, auth_1.handleLogin);
+router.delete("/logout", auth_1.handleLogout);
 router.get("/authorize", sanitizers_1.sanitizeBody, auth_1.authorize);
 // User Profile
 router.get("/me", auth_1.authorize, users_1.getUserByToken);

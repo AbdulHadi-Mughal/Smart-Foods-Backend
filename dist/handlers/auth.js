@@ -50,7 +50,7 @@ const handleSignup = async (req, res) => {
             .cookie("AuthToken", jwtCookie, {
             // Expose this cookie to subdomains
             domain: isProd
-                ? "." + envconfig_1.CLIENT_URL.replace(/^www\./, "").split("/")[2]
+                ? "." + envconfig_1.CLIENT_URL.replace("www.", "").split("/")[2]
                 : undefined, // Replace with your actual domain in production
             httpOnly: isProd, // Always keep this true for security
             secure: isProd, // Only true in production (HTTPS)
@@ -98,7 +98,7 @@ const handleLogin = async (req, res) => {
             .status(201)
             .cookie("AuthToken", jwtCookie, {
             domain: isProd
-                ? `.${envconfig_1.CLIENT_URL.replace(/^www\./, "").split("/")[2]}`
+                ? `.${envconfig_1.CLIENT_URL.replace("www.", "").split("/")[2]}`
                 : undefined, // Replace with your actual domain in production
             httpOnly: isProd, // Always keep this true for security
             secure: isProd, // Only true in production (HTTPS)
@@ -118,9 +118,14 @@ const handleLogout = (req, res) => {
     res
         .status(200)
         .clearCookie("AuthToken", {
-        domain: isProd ? `.${envconfig_1.CLIENT_URL}` : undefined, // Replace with your actual domain in production
-        httpOnly: isProd,
-        secure: isProd,
+        domain: isProd
+            ? `.${envconfig_1.CLIENT_URL.replace("www.", "").split("/")[2]}`
+            : undefined, // Replace with your actual domain in production
+        httpOnly: isProd, // Always keep this true for security
+        secure: isProd, // Only true in production (HTTPS)
+        sameSite: "strict", // Must be "none" if frontend is on different origin *and* using HTTPS
+        path: "/", // Always specify"
+        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
     })
         .json({ message: "Logout successful" });
 };
